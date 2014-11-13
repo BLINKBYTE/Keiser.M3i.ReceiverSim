@@ -29,6 +29,7 @@ namespace KeiserCmd
 
         public Relay ()
         {
+            doLog = true;
             instance = this;
         }
 
@@ -52,6 +53,11 @@ namespace KeiserCmd
             Console.WriteLine ("Added Bike with ID: " + riders.Last ().id);
         }
 
+        public void StopRider (int index)
+        {
+            riders.RemoveAt (index);
+        }
+
         public void stop ()
         {
             _KeepWorking = running = false;
@@ -72,6 +78,29 @@ namespace KeiserCmd
             socket.Close ();
         }
 
+        Random rand = new Random ();
+
+        void HandleRandomUpDown ()
+        {
+            if (riders.Count == 0) {
+                NewRider ();
+                return;
+            }
+
+            int updown = rand.Next (0, 100);
+
+            if (updown < 30) {
+                Rider rider = riders [rand.Next (0, riders.Count)];
+
+                if (rider.clock > 0 && (rider.clock / 180) * 100 > rand.Next (50, 99)) {
+                    riders.Remove (rider);
+                    Console.WriteLine ("Removed rider with clock time of " + rider.clock + " and bike ID: " + rider.id);
+                }
+            } else if (updown > 80) {
+                NewRider ();
+            }
+        }
+
         private void worker ()
         {
             Stopwatch runTime;
@@ -80,6 +109,9 @@ namespace KeiserCmd
             socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
             while (_KeepWorking) {
                 runTime = Stopwatch.StartNew ();
+
+                HandleRandomUpDown ();
+
                 foreach (Rider rider in riders) {
                     rider.cycle ();
                 }
@@ -115,7 +147,7 @@ namespace KeiserCmd
         public void Log (string str)
         {
             if (doLog) {
-                System.Console.WriteLine (str);
+                System.Console.WriteLine (str + Environment.NewLine);
             }
         }
 

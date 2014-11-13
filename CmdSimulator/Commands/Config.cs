@@ -6,7 +6,7 @@ namespace KeiserCmd
 {
     public class Config
     {
-        static string _IP = "238.10.10.10";
+        static string _IP = "239.10.10.10";
 
         public static string IP {
             get { return _IP; }
