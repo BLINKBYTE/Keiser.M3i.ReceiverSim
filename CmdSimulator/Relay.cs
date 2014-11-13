@@ -92,7 +92,7 @@ namespace KeiserCmd
             if (updown < 30) {
                 Rider rider = riders [rand.Next (0, riders.Count)];
 
-                if (rider.clock > 0 && (rider.clock / 180) * 100 > rand.Next (50, 99)) {
+                if (rider.clock > 0 && (rider.clock / 600) * 100 > rand.Next (50, 99)) {
                     riders.Remove (rider);
                     Console.WriteLine ("Removed rider with clock time of " + rider.clock + " and bike ID: " + rider.id);
                 }
